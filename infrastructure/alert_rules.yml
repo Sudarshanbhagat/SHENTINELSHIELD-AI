@@ -1,0 +1,50 @@
+# Alert Rules for SentinelShield AI
+
+groups:
+  - name: sentinel.rules
+    interval: 30s
+    rules:
+      # Backend alerts
+      - alert: BackendHighCPU
+        expr: rate(container_cpu_usage_seconds_total{pod=~"backend.*"}[5m]) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Backend pod {{ $labels.pod }} has high CPU usage"
+          description: "CPU usage is {{ $value | humanizePercentage }}"
+
+      - alert: BackendHighMemory
+        expr: container_memory_usage_bytes{pod=~"backend.*"} / container_spec_memory_limit_bytes > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Backend pod {{ $labels.pod }} has high memory usage"
+
+      - alert: BackendDown
+        expr: up{job="backend"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Backend pod {{ $labels.pod }} is down"
+
+      # Database alerts
+      - alert: PostgreSQLDown
+        expr: up{job="postgres"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL database is down"
+
+      # High threat detection rate
+      - alert: AnomalouslyHighThreatRate
+        expr: rate(threat_logs_total[5m]) > 100
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Anomalously high threat detection rate"
+          description: "{{ $value }} threats per second detected"
