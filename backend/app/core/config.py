@@ -10,7 +10,7 @@ class Settings:
     # Database
     DATABASE_URL: str = os.getenv(
         "DATABASE_URL",
-        "postgresql+psycopg://sentinel_user:sentinel_secure_pass_123@localhost:5432/sentinel_shield"
+        "sqlite:///./sentinel_shield.db"
     )
     
     # Redis
@@ -30,8 +30,13 @@ class Settings:
     # CORS
     CORS_ORIGINS: list = [
         "http://localhost:3000",
+        "http://localhost:3001",
         "http://localhost:8000",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3001",
+        "http://127.0.0.1:8000",
         "https://localhost:3000",
+        "https://localhost:3001",
     ]
     
     # Security

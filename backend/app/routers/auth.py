@@ -13,6 +13,7 @@ from passlib.context import CryptContext
 from app.core.database import get_db
 from app.models.models import User
 from app.core.security import create_access_token, verify_password, get_password_hash
+from app.schemas.schemas import UserCreate
 
 # Security setup
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -47,22 +48,25 @@ def verify_user_password(plain_password: str, hashed_password: str) -> bool:
 # POST /auth/register - SIGNUP ENDPOINT
 # ============================================================================
 
-@router.post("/register", tags=["Authentication"])
+@router.post("/register", status_code=status.HTTP_201_CREATED, tags=["Authentication"])
 async def register(
-    email: str,
-    password: str,
-    full_name: str,
+    user_data: UserCreate,
     db: Session = Depends(get_db)
 ):
     """
     Register a new user
     
+    Request body:
     - **email**: User email address (must be unique)
-    - **password**: User password (minimum 8 characters)
+    - **password**: User password (minimum 12 characters with uppercase, number, and special char)
     - **full_name**: User's full name
     
     Returns JWT access_token on success
     """
+    email = user_data.email
+    password = user_data.password
+    full_name = user_data.full_name
+    
     # Validate input
     if not email or "@" not in email:
         raise HTTPException(
@@ -70,10 +74,10 @@ async def register(
             detail="Invalid email format"
         )
     
-    if not password or len(password) < 8:
+    if not password or len(password) < 12:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Password must be at least 8 characters"
+            detail="Password must be at least 12 characters"
         )
     
     if not full_name or len(full_name.strip()) == 0:

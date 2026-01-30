@@ -4,7 +4,8 @@
  */
 
 // Base URL for backend API
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+// Note: Using 127.0.0.1:8000 for local development (more reliable than localhost)
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 // API Endpoints
 export const API_ENDPOINTS = {

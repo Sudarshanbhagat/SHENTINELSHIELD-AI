@@ -105,19 +105,10 @@ export default function SignupPage() {
         return;
       }
 
-      // Success: Save token and redirect
-      if (data.access_token) {
-        setToken(data.access_token);
-        localStorage.setItem('tokenType', data.token_type || 'bearer');
-        if (data.user) {
-          localStorage.setItem('user', JSON.stringify(data.user));
-        }
-        // User is auto-logged in, redirect to dashboard
-        router.push('/dashboard');
-      } else {
-        // Fallback: No token received, redirect to login
-        router.push('/login');
-      }
+      // Success: User registered successfully
+      // Signup endpoint returns 201 Created on success
+      // Redirect to login page so user can sign in with their credentials
+      router.push('/login');
     } catch (err) {
       console.error('Signup network error:', err);
       const errorMsg = err instanceof Error ? err.message : 'Network error occurred';

@@ -57,7 +57,7 @@ export default function LoginPage() {
         return;
       }
 
-      // Success: Save token to localStorage
+      // Success: Save token to localStorage for persistent authentication
       setToken(token);
       localStorage.setItem('tokenType', data.token_type || 'bearer');
 
@@ -66,7 +66,8 @@ export default function LoginPage() {
         localStorage.setItem('user', JSON.stringify(data.user));
       }
 
-      // Redirect to dashboard
+      // Clear any error states and redirect to dashboard
+      setError('');
       router.push('/dashboard');
     } catch (err) {
       console.error('Login network error:', err);
